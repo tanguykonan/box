@@ -15,16 +15,15 @@ fn get_target_hub(hub_override: Option<&str>) -> Result<String, String> {
     } else if let Some(h) = get_setting("hub_url") {
         h
     } else {
-        std::env::var("BOX_HUB_URL").unwrap_or_default()
+        crate::config::DEFAULT_HUB_URL.to_string()
     };
 
     let trimmed = hub.trim().trim_end_matches('/').to_string();
     if trimmed.is_empty() {
-        return Err(
-            "Registry Hub URL is not configured. Set BOX_HUB_URL in your .env (e.g. BOX_HUB_URL=https://boxhub.paxiz.org) or run `box config set hub_url <url>` or use `box login --hub <url>`.".to_string()
-        );
+        Ok(crate::config::DEFAULT_HUB_URL.to_string())
+    } else {
+        Ok(trimmed)
     }
-    Ok(trimmed)
 }
 
 fn format_http_error(e: ureq::Error) -> String {

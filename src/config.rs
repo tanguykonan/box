@@ -7,21 +7,37 @@ use std::sync::Once;
 
 static DOTENV_INIT: Once = Once::new();
 
+pub const DEFAULT_HUB_URL: &str = "https://boxhub.paxiz.org";
+pub const DEFAULT_COMPRESSION_LEVEL: i32 = 3;
+pub const DEFAULT_NETWORK_TIMEOUT: u64 = 60;
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct AuthCredential {
     pub username: String,
     pub token: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+fn default_hub_url() -> Option<String> {
+    Some(DEFAULT_HUB_URL.to_string())
+}
+
+fn default_compression_level() -> Option<i32> {
+    Some(DEFAULT_COMPRESSION_LEVEL)
+}
+
+fn default_network_timeout() -> Option<u64> {
+    Some(DEFAULT_NETWORK_TIMEOUT)
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfigData {
-    #[serde(default)]
+    #[serde(default = "default_hub_url")]
     pub hub_url: Option<String>,
-    #[serde(default)]
+    #[serde(default = "default_compression_level")]
     pub compression_level: Option<i32>,
     #[serde(default)]
     pub build_workers: Option<usize>,
-    #[serde(default)]
+    #[serde(default = "default_network_timeout")]
     pub network_timeout: Option<u64>,
     #[serde(default)]
     pub python_mirror: Option<String>,
@@ -31,6 +47,21 @@ pub struct AppConfigData {
     pub auth: HashMap<String, AuthCredential>,
     #[serde(flatten)]
     pub custom: HashMap<String, serde_json::Value>,
+}
+
+impl Default for AppConfigData {
+    fn default() -> Self {
+        Self {
+            hub_url: Some(DEFAULT_HUB_URL.to_string()),
+            compression_level: Some(DEFAULT_COMPRESSION_LEVEL),
+            build_workers: None,
+            network_timeout: Some(DEFAULT_NETWORK_TIMEOUT),
+            python_mirror: None,
+            node_mirror: None,
+            auth: HashMap::new(),
+            custom: HashMap::new(),
+        }
+    }
 }
 
 pub fn bootstrap_dotenv() {
@@ -158,13 +189,19 @@ pub fn get_setting(key: &str) -> Option<String> {
         }
     }
 
-    // 2. Check config.json (Priority 2)
+    // 2. Check config.json (Priority 2) & Defaults (Priority 3)
     let cfg = load_config();
     match key {
-        "hub_url" => cfg.hub_url,
-        "compression_level" => cfg.compression_level.map(|v| v.to_string()),
+        "hub_url" => cfg.hub_url.or_else(|| Some(DEFAULT_HUB_URL.to_string())),
+        "compression_level" => cfg
+            .compression_level
+            .map(|v| v.to_string())
+            .or_else(|| Some(DEFAULT_COMPRESSION_LEVEL.to_string())),
         "build_workers" => cfg.build_workers.map(|v| v.to_string()),
-        "network_timeout" => cfg.network_timeout.map(|v| v.to_string()),
+        "network_timeout" => cfg
+            .network_timeout
+            .map(|v| v.to_string())
+            .or_else(|| Some(DEFAULT_NETWORK_TIMEOUT.to_string())),
         "python_mirror" => cfg.python_mirror,
         "node_mirror" => cfg.node_mirror,
         custom => cfg.custom.get(custom).and_then(|v| {

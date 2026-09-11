@@ -317,18 +317,38 @@ fn main() {
                     style("KEY").bold().cyan(),
                     style("VALUE").bold().cyan()
                 );
-                println!("{}", style("-".repeat(50)).dim());
-                if let Some(h) = cfg.hub_url {
-                    println!("{:<25} {}", "hub_url", style(h).bold().white());
-                }
-                if let Some(c) = cfg.compression_level {
-                    println!("{:<25} {}", "compression_level", c);
-                }
+                println!("{}", style("-".repeat(60)).dim());
+
+                let hub = config::get_setting("hub_url")
+                    .unwrap_or_else(|| config::DEFAULT_HUB_URL.to_string());
+                println!("{:<25} {}", "hub_url", style(hub).bold().white());
+
+                let comp = config::get_setting("compression_level")
+                    .unwrap_or_else(|| config::DEFAULT_COMPRESSION_LEVEL.to_string());
+                println!("{:<25} {}", "compression_level", comp);
+
+                let timeout = config::get_setting("network_timeout")
+                    .unwrap_or_else(|| config::DEFAULT_NETWORK_TIMEOUT.to_string());
+                println!(
+                    "{:<25} {}s",
+                    "network_timeout",
+                    timeout.trim_end_matches('s')
+                );
+
+                println!("{:<25} {}", "box_home", config::get_box_home().display());
+                println!(
+                    "{:<25} {}",
+                    "runtimes_dir",
+                    config::get_runtimes_dir().display()
+                );
+                println!(
+                    "{:<25} {}",
+                    "volumes_dir",
+                    config::get_volumes_dir().display()
+                );
+
                 if let Some(w) = cfg.build_workers {
                     println!("{:<25} {}", "build_workers", w);
-                }
-                if let Some(t) = cfg.network_timeout {
-                    println!("{:<25} {}", "network_timeout", t);
                 }
                 if let Some(m) = cfg.python_mirror {
                     println!("{:<25} {}", "python_mirror", m);
