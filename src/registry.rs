@@ -7,6 +7,8 @@ use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
+const USER_AGENT: &str = concat!("box-cli/", env!("CARGO_PKG_VERSION"));
+
 fn get_target_hub(hub_override: Option<&str>) -> Result<String, String> {
     let hub = if let Some(h) = hub_override {
         h.to_string()
@@ -98,7 +100,7 @@ pub fn login(token_opt: Option<&str>, hub_opt: Option<&str>) -> Result<(), Strin
 
     let resp = ureq::get(&whoami_url)
         .set("Authorization", &format!("Bearer {}", token))
-        .set("User-Agent", "box-cli/0.2.0")
+        .set("User-Agent", USER_AGENT)
         .call()
         .map_err(format_http_error)?;
 
@@ -360,7 +362,7 @@ pub fn push(
             &format!("multipart/form-data; boundary={}", boundary),
         )
         .set("X-Box-Tag", &full_tag)
-        .set("User-Agent", "box-cli/0.2.0")
+        .set("User-Agent", USER_AGENT)
         .send_bytes(&body)
         .map_err(format_http_error)?;
 
@@ -411,7 +413,7 @@ pub fn pull(tag: &str, output_path: Option<&str>) -> Result<PathBuf, String> {
         "{}/api/v1/registry/pull/{}/{}/{}",
         target_hub, author, pkg_name, version
     );
-    let mut req = ureq::get(&pull_url).set("User-Agent", "box-cli/0.2.0");
+    let mut req = ureq::get(&pull_url).set("User-Agent", USER_AGENT);
     if let Some(t) = token {
         req = req.set("Authorization", &format!("Bearer {}", t));
     }
@@ -484,7 +486,7 @@ fn download_file_with_progress(
     expected_size: Option<u64>,
 ) -> Result<(), String> {
     let resp = ureq::get(url)
-        .set("User-Agent", "box-cli/0.2.0")
+        .set("User-Agent", USER_AGENT)
         .call()
         .map_err(|e| format!("Download stream error: {e}"))?;
 

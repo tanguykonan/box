@@ -16,7 +16,7 @@ use std::process::exit;
 #[derive(Parser, Debug)]
 #[command(
     name = "box",
-    version = "0.2.0",
+    version = env!("CARGO_PKG_VERSION"),
     disable_version_flag = true,
     about = "Box - Autonomous Application Packaging & Runtime Engine",
     long_about = "Box • Autonomous Application Packaging & Runtime Engine\nPackage, distribute, and execute Python and Node.js/TypeScript applications\nas hermetic, self-contained .box archives without virtual environments or host runtime installs.",
