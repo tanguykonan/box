@@ -28,7 +28,7 @@ jobs:
             target: aarch64-apple-darwin
             binary: box
             archive: box-darwin-arm64.tar.gz
-          - os: macos-13
+          - os: macos-latest
             target: x86_64-apple-darwin
             binary: box
             archive: box-darwin-x86_64.tar.gz
