@@ -1,0 +1,29 @@
+name: python-discord-logger
+version: 1.0.0
+
+runtime:
+  type: python
+  version: "3.12"
+
+# Bytecode compilation and source protection
+protect: true
+
+# Working directory
+workdir: .
+
+# Application entrypoint
+entrypoint: main.py
+
+# Production dependencies
+dependencies: requirements.txt
+
+# Source files to include
+include:
+  - main.py
+
+# Persistent volume definition (<volume_name>:<sandbox_path>)
+volumes:
+  - discord_messages:/data
+
+# Environment schema validation
+env_schema: .env.example

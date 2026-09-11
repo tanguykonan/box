@@ -1,0 +1,12 @@
+{
+  "name": "js-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord Hello World Bot in JavaScript using Node.js and Box CLI",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  }
+}

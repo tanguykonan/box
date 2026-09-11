@@ -1,0 +1,25 @@
+name: ts-app
+version: 0.1.0
+
+runtime:
+  type: node
+  version: "26"
+
+# Source protection
+protect: false
+
+# Working directory
+workdir: .
+
+# Next.js production server entrypoint
+entrypoint: node_modules/next/dist/bin/next start --port 3000
+
+# Production dependencies
+dependencies: package.json
+
+# Source files to include
+include:
+  - .next/
+  - public/
+  - next.config.ts
+  - package.json

@@ -1,0 +1,26 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Weekly run every Sunday at 00:00 UTC
+  push:
+    paths:
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
+    branches: [main, master]
+  pull_request:
+    paths:
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  security_audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: rustsec/audit-check-action@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
