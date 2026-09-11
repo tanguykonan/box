@@ -24,7 +24,7 @@ zstd = "0.13"
 tar = "0.4"
 zip = { version = "2.2", default-features = false, features = ["deflate"] }
 flate2 = "1.0"
-sha2 = "0.10"
+sha2 = "0.11"
 hex = "0.4"
 dotenvy = "0.15"
 directories = "5.0"
