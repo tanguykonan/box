@@ -353,7 +353,7 @@ pub fn build(path_arg: Option<&str>) -> Result<PathBuf, String> {
 
     // Step 5: Pack Archive with Fast Integrity
     engine.start_step(step_pack, "compressing archive (TAR + Zstandard)...");
-    let output_path = PathBuf::from(format!("{}.box", name));
+    let output_path = project_dir.join(format!("{}.box", name));
 
     let comp_level: Option<i32> = get_setting("compression_level").and_then(|v| v.parse().ok());
 
