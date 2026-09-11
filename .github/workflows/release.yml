@@ -52,6 +52,9 @@ jobs:
           Get-FileHash -Algorithm SHA256 ${{ matrix.archive }} | ForEach-Object { "$($_.Hash.ToLower())  $($_.Path | Split-Path -Leaf)" } | Out-File -FilePath "${{ matrix.archive }}.sha256" -Encoding utf8
           Copy-Item -Path ${{ matrix.binary }} -Destination "box-windows-x86_64.exe"
           Get-FileHash -Algorithm SHA256 "box-windows-x86_64.exe" | ForEach-Object { "$($_.Hash.ToLower())  $($_.Path | Split-Path -Leaf)" } | Out-File -FilePath "box-windows-x86_64.exe.sha256" -Encoding utf8
+          
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item -Path ${{ matrix.archive }}, "${{ matrix.archive }}.sha256", "box-windows-x86_64.exe", "box-windows-x86_64.exe.sha256" -Destination dist/
 
       - name: Package Archive (Unix)
         if: matrix.os != 'windows-latest'
@@ -61,29 +64,31 @@ jobs:
           tar -czvf ${{ matrix.archive }} ${{ matrix.binary }}
           shasum -a 256 ${{ matrix.archive }} > "${{ matrix.archive }}.sha256"
           
+          mkdir -p dist
+          cp ${{ matrix.archive }} dist/
+          cp "${{ matrix.archive }}.sha256" dist/
+          
           if [[ "${{ matrix.archive }}" == *"darwin-arm64"* ]]; then
             cp ${{ matrix.archive }} box-macos-arm64.tar.gz
             shasum -a 256 box-macos-arm64.tar.gz > box-macos-arm64.tar.gz.sha256
             cp ${{ matrix.binary }} box-darwin-arm64
             shasum -a 256 box-darwin-arm64 > box-darwin-arm64.sha256
+            cp box-macos-arm64.tar.gz box-macos-arm64.tar.gz.sha256 box-darwin-arm64 box-darwin-arm64.sha256 dist/
           elif [[ "${{ matrix.archive }}" == *"darwin-x86_64"* ]]; then
             cp ${{ matrix.archive }} box-macos-x86_64.tar.gz
             shasum -a 256 box-macos-x86_64.tar.gz > box-macos-x86_64.tar.gz.sha256
             cp ${{ matrix.binary }} box-darwin-x86_64
             shasum -a 256 box-darwin-x86_64 > box-darwin-x86_64.sha256
+            cp box-macos-x86_64.tar.gz box-macos-x86_64.tar.gz.sha256 box-darwin-x86_64 box-darwin-x86_64.sha256 dist/
           elif [[ "${{ matrix.archive }}" == *"linux-x86_64"* ]]; then
             cp ${{ matrix.binary }} box-linux-x86_64
             shasum -a 256 box-linux-x86_64 > box-linux-x86_64.sha256
+            cp box-linux-x86_64 box-linux-x86_64.sha256 dist/
           fi
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v3
         with:
-          files: |
-            target/${{ matrix.target }}/release/*.tar.gz
-            target/${{ matrix.target }}/release/*.zip
-            target/${{ matrix.target }}/release/*.exe
-            target/${{ matrix.target }}/release/box-*
-            target/${{ matrix.target }}/release/*.sha256
+          files: target/${{ matrix.target }}/release/dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
