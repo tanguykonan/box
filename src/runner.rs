@@ -201,7 +201,10 @@ pub fn run(
         }
 
         if !failed.is_empty() {
-            let err_msg = format!("Archive integrity check failed: {} corrupted or missing file(s)", failed.len());
+            let err_msg = format!(
+                "Archive integrity check failed: {} corrupted or missing file(s)",
+                failed.len()
+            );
             engine.fail_step(step_integrity, &err_msg);
             engine.stop(None);
             return Err(err_msg);
@@ -211,7 +214,11 @@ pub fn run(
             .get("tree_sha256")
             .and_then(|v| v.as_str())
             .unwrap_or("");
-        let short_sha = if tree_sha.len() >= 16 { &tree_sha[..16] } else { "canonical" };
+        let short_sha = if tree_sha.len() >= 16 {
+            &tree_sha[..16]
+        } else {
+            "canonical"
+        };
         engine.finish_step(
             step_integrity,
             &format!(
