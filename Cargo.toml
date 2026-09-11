@@ -30,7 +30,7 @@ dotenvy = "0.15"
 directories = "5.0"
 tempfile = "3.14"
 walkdir = "2.5"
-ureq = { version = "2.10", features = ["json", "native-tls"] }
+ureq = { version = "3.4", features = ["json", "native-tls"] }
 indicatif = { version = "0.17", features = ["rayon"] }
 console = "0.15"
 chrono = { version = "0.4", features = ["serde"] }
