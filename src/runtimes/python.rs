@@ -81,16 +81,25 @@ impl PythonRuntimeAdapter {
             _ => "x86_64-unknown-linux-gnu",
         };
 
-        let full_ver = match version {
-            "3.13" => "3.13.2",
-            "3.12" => "3.12.5",
-            "3.11" => "3.11.9",
-            _ => "3.12.5",
+        let (full_ver, rel_tag) = match version {
+            "3.13" => ("3.13.2", "20250212"),
+            "3.12" => ("3.12.5", "20240814"),
+            "3.11" => ("3.11.9", "20240814"),
+            "3.10" => ("3.10.14", "20240814"),
+            _ => ("3.12.5", "20240814"),
         };
 
+        let base_mirror = custom_mirror.unwrap_or_else(|| {
+            "https://github.com/astral-sh/python-build-standalone/releases/download".to_string()
+        });
+
         let url = format!(
-            "https://github.com/indygreg/python-build-standalone/releases/download/20240814/cpython-{}+{}-install_only.tar.gz",
-            full_ver, triple
+            "{}/{}/cpython-{}+{}-{}-install_only.tar.gz",
+            base_mirror.trim_end_matches('/'),
+            rel_tag,
+            full_ver,
+            rel_tag,
+            triple
         );
         Ok((
             full_ver.to_string(),
