@@ -32,7 +32,7 @@ tempfile = "3.14"
 walkdir = "2.5"
 ureq = { version = "2.10", features = ["json", "native-tls"] }
 indicatif = { version = "0.18", features = ["rayon"] }
-console = "0.15"
+console = "0.16"
 chrono = { version = "0.4", features = ["serde"] }
 rayon = "1.10"
 shlex = "2.0"
