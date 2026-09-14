@@ -25,7 +25,7 @@ investigated and a fix or mitigation has been released.
 
 Security fixes are provided for the latest stable version.
 
-| Version | Supported |
-| ------- | --------- |
-| Latest stable | Yes |
-| Older versions | No |
+| Version        | Supported |
+|----------------|-----------|
+| Latest stable  | Yes       |
+| Older versions | No        |
